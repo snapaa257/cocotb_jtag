@@ -1,0 +1,8 @@
+results.xml
+venv
+__pycache__
+sim_build
+test_dmi_clone.py
+test_halt.py
+test_openocd_cloned.py
+
