@@ -64,7 +64,8 @@ The next two tests need a RISC-V-capable OpenOCD. Install it from the OpenOCDRis
 repo below, then come back here and continue.
 **Open a new terminal and peform this out of this repo**
 
-> OpenOCD repository: https://github.com/SpinalHDL/openocd_riscv.git
+> OpenOCD main repository: https://github.com/SpinalHDL/openocd_riscv.git
+> My repo to help resolve issues with setting up openocd_riscv: https://github.com/snapaa257/openocdriscv_setup.git
 
 ### 3. OpenOCD - `test_openocd`
 Run OpenOCD up against the running simulation so it can scan the chain, detect
