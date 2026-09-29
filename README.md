@@ -127,3 +127,10 @@ For Terminal 3, can manually do it
    ```bash
     deactivate
    ```
+
+## NOTE:
+For waveform run with, example:
+   ```bash
+    make MODULE=test_gdb WAVES=1
+   ```
+
