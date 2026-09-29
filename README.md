@@ -81,6 +81,13 @@ Move into the openocd_riscv repo cloned earlier
     ./src/openocd -f ../cocotb_jtag/vexriscv_configs/vexriscv_sim.cfg
    ```
 
+### OR
+To do more than halt/resume core on Terminal 2. That is read/write to register
+   ```bash
+    ./src/openocd -f ../cocotb_jtag/vexriscv_configs/vexriscv_mem.cfg
+   ```
+
+
 ### GDB
 At time of testing. xpack gdb used. 
 Open a new terminal and peform this out of this repo 
