@@ -14,30 +14,26 @@ from cocotbext.jtag.ocd_client import OCDDriver
 
 NOP = 0x00000013 #  no-op, harmless instr. for cpu to run
 
-# Defisive setter,  assigns val to name in DUT
-def _set(dut, name, val):
-    if hasattr(dut, name):
-        getattr(dut, name).value = val
-
 # Feeding Core with NOP to run forever in background
 async def ibus_nop_loop(dut):
-    _set(dut, "iBus_cmd_ready", 1) # always ready to accept
-    _set(dut, "iBus_rsp_payload_error", 0) # never errors
-    dut.iBus_rsp_payload_inst.value = NOP
-    dut.iBus_rsp_valid.value = 0
+    dut.iBusWishbone_ACK.value = 0
+    dut.iBusWishbone_DAT_MISO.value = NOP
+    dut.iBusWishbone_ERR.value = 0
     while True:
         await RisingEdge(dut.clk)
-        core_req_instr = dut.iBus_cmd_valid.value
-        dut.iBus_rsp_valid.value = 1 if (core_req_instr.is_resolvable and int(core_req_instr) == 1) else 0 # guads against X/Z
-        dut.iBus_rsp_payload_inst.value = NOP
+        cyc, stb = dut.iBusWishbone_CYC.value, dut.iBusWishbone_STB.value
+        active = cyc.is_resolvable and stb.is_resolvable and int(cyc) and int(stb)
+        dut.iBusWishbone_ACK.value = 1 if active else 0 #
+        dut.iBusWishbone_DAT_MISO.value = NOP
 
 # Tying off bus/signals not used as to not interfere
 def tie_off(dut):
-    _set(dut, "dBus_cmd_read", 1)
-    for off_dBus in ("dBus_rsp_valid", "dBus_rsp_ready", "dBus_rsp_error", "dBus_rsp_data"):
-        _set(dut, off_dBus, 0)
-    for off_irq in ("imerInterrupt", "externalInterrupt", "softwareInterrupt"):
-        _set(dut, off_irq, 0)
+    dut.dBusWishbone_ACK.value = 0
+    dut.dBusWishbone_DAT_MISO.value = 0
+    dut.dBusWishbone_ERR.value = 0
+    dut.timerInterrupt.value = 0
+    dut.externalInterrupt.value = 0
+    dut.softwareInterrupt.value = 0
 
 # OCDDriver: Opens port and listens to OpenOCD single char bitbang commands
 #   translates each into a drive on jtag
